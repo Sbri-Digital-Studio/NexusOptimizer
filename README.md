@@ -62,7 +62,7 @@ Per verificare l'interfaccia, `NEXUS_TRACE_BINDINGS=1` scrive gli errori di bind
 | Pacchetto | Percorso | Forma | Avvio | RAM privata |
 |---|---|---|---|---|
 | Installazione | `Installer/publish/win-x64/` | cartella self-contained | ~550 ms | ~146 MB |
-| Portabile | `Installer/publish/portable-win-x64/NexusOptimizer.exe` + [`.zip`](Installer/NexusOptimizer-win-x64.zip) | eseguibile singolo | ~870 ms | ~146 MB |
+| Portabile | `Installer/publish/portable-win-x64/NexusOptimizer.exe` + `Installer/NexusOptimizer-win-x64.zip` | eseguibile singolo | ~870 ms | ~146 MB |
 
 Il bundle a file singolo **non** viene compresso: la compressione dimezza il file su disco ma
 tiene circa 60 MB in più in memoria per tutta la sessione, e l'archivio ZIP risulta comunque
@@ -101,3 +101,15 @@ Niente finto ottimizzazioni, niente "RAM cleaner", niente registry cleaner aggre
 niente disinstallazione driver automatica, niente claim antivirus. Nessun avviso allarmistico:
 ogni notifica nasce da una soglia misurata e spiegata in `docs/NOTIFICHE.md`. Dettagli in
 `docs/ROADMAP.md`.
+
+## Licenza
+
+Distribuito sotto **GNU General Public License v3.0** — vedi [`LICENSE`](LICENSE).
+
+In sintesi: puoi usare, studiare, modificare e ridistribuire il programma, anche
+commercialmente; chi distribuisce una versione modificata deve rilasciarne il sorgente
+sotto la stessa licenza. È una scelta deliberata: in una categoria di software segnata da
+rebranding opachi e adware, il copyleft garantisce che ogni derivato resti ispezionabile
+quanto l'originale.
+
+Copyright (C) 2026 Kristian
