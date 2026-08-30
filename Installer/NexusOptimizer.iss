@@ -3,7 +3,8 @@
 
 #define MyAppName "Nexus Optimizer"
 #define MyAppVersion "0.1.0-alpha.1"
-#define MyAppPublisher "Nexus Optimizer"
+#define MyAppPublisher "Sbri Digital Studio"
+#define MyAppCopyright "Copyright (C) 2026 Sbri Digital Studio"
 #define MyAppExeName "NexusOptimizer.exe"
 
 [Setup]
@@ -11,6 +12,7 @@ AppId={{A6EF2DD4-67B6-42C2-80B5-959F5F4C3C10}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+AppCopyright={#MyAppCopyright}
 DefaultDirName={localappdata}\Programs\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
