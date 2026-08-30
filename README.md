@@ -39,6 +39,47 @@ Documentazione: [`docs/MODALITA-GAMING.md`](docs/MODALITA-GAMING.md) ·
 [`docs/BRAND.md`](docs/BRAND.md) ·
 [`docs/FEATURE-MATRIX.md`](docs/FEATURE-MATRIX.md)
 
+## Download
+
+L'ultima versione è nella pagina [Releases](https://github.com/Sbri0110/NexusOptimizer/releases/latest).
+
+| File | Uso |
+|---|---|
+| `NexusOptimizer-win-x64.zip` | Archivio dell'eseguibile portabile (58 MB) |
+| `NexusOptimizer.exe` | Eseguibile portabile singolo, nessuna installazione (141 MB) |
+
+Serve Windows 10 22H2 o Windows 11 a 64 bit. Il runtime .NET è incluso: non c'è altro da installare.
+
+### L'avviso di Windows al primo avvio
+
+Le build non sono firmate digitalmente, quindi SmartScreen mostra **"Windows ha protetto il PC"**.
+Per procedere: *Ulteriori informazioni* → *Esegui comunque*.
+
+Windows lo fa con qualunque eseguibile privo di firma, indipendentemente dal suo contenuto: un
+certificato di code signing ha un costo ricorrente che questo progetto per ora non sostiene.
+L'avviso quindi non dice nulla sul programma — ed è bene sapere che non lo direbbe nemmeno se
+il programma fosse malevolo, purché firmato.
+
+### Verificare il file scaricato
+
+Dato che manca la firma, l'impronta SHA-256 è il modo per accertarsi che il file sia
+esattamente quello pubblicato qui. In PowerShell:
+
+```powershell
+Get-FileHash .\NexusOptimizer.exe -Algorithm SHA256
+```
+
+Impronte della **v0.1.0-alpha.1**:
+
+```
+582917ee13399cfeece935209dc03453e39884d1219d9ac1e56c3fdc58675af2  NexusOptimizer.exe
+95eda6d47de16dee5d82721e5bb977352997759720ee2bb7eb43faec5d12988e  NexusOptimizer-win-x64.zip
+```
+
+Se non ti fidi di un binario non firmato — posizione ragionevole, e coerente con lo spirito di
+questo progetto — compilalo tu: il sorgente è interamente qui e bastano `dotnet build` e
+`.\Installer\Publish.ps1`.
+
 ## Requisiti
 
 - Windows 10 22H2 o 11
