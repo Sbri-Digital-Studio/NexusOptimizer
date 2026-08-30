@@ -22,6 +22,10 @@ se un dato non e' certo viene mostrato all'utente, mai cancellato.
 | 7b | Centro avvisi reale, controllo aggiornamenti opt-in, istanza singola | completata |
 | 8 | Packaging, firma, installer/portable | **in corso** (script di firma pronti) |
 
+> **Questa non è una versione finale.** Il progetto è in sviluppo attivo e continuerà a
+> ricevere aggiornamenti: funzioni nuove, correzioni e affinamenti. Alcune aree sono
+> dichiarate "in corso" nella tabella qui sopra proprio perché lo sono.
+
 Documentazione: [`docs/MODALITA-GAMING.md`](docs/MODALITA-GAMING.md) ·
 [`docs/LIVELLI-MODALITA.md`](docs/LIVELLI-MODALITA.md) ·
 [`docs/NOTIFICHE.md`](docs/NOTIFICHE.md) · [`docs/AGGIORNAMENTI.md`](docs/AGGIORNAMENTI.md) ·
@@ -102,6 +106,30 @@ Niente finto ottimizzazioni, niente "RAM cleaner", niente registry cleaner aggre
 niente disinstallazione driver automatica, niente claim antivirus. Nessun avviso allarmistico:
 ogni notifica nasce da una soglia misurata e spiegata in `docs/NOTIFICHE.md`. Dettagli in
 `docs/ROADMAP.md`.
+
+## Perché esiste
+
+Il mercato dei "PC optimizer" è pieno di programmi che promettono e non mantengono:
+percentuali di velocità inventate, contatori di "errori di registro" che salgono da soli,
+pulsanti che fingono di liberare RAM, avvisi allarmistici costruiti per vendere una licenza.
+Nexus Optimizer nasce come reazione diretta a tutto questo.
+
+La regola è una sola: **niente che non si possa misurare, spiegare e annullare.** Ogni
+operazione dichiara in anticipo cosa tocca e quanto spazio libera davvero, viene eseguita
+solo dopo un'anteprima, e resta reversibile tramite quarantena e cronologia. Dove Windows
+non permette un intervento sicuro e verificabile, il programma lo dice invece di simularlo.
+Nessuna telemetria, nessuna metrica gonfiata, nessuna funzione decorativa.
+
+La sezione [Cosa NON fa questo programma](#cosa-non-fa-questo-programma) è parte del
+progetto quanto l'elenco delle funzioni.
+
+## Feedback e contributi
+
+Feedback, consigli, segnalazioni di bug e proposte sono benvenuti: apri una
+[Issue](../../issues) o una Pull Request. Sono particolarmente utili le segnalazioni su
+hardware o configurazioni diverse da quelle su cui è stato sviluppato, i casi in cui una
+stima si rivela imprecisa, e qualunque comportamento che sembri promettere più di quanto
+mantenga — quel tipo di segnalazione colpisce il cuore del progetto.
 
 ## Licenza
 
