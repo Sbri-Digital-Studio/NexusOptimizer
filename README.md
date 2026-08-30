@@ -1,6 +1,12 @@
-# Nexus Optimizer
+<p align="center">
+  <img src="docs/logo.png" alt="" width="112">
+</p>
 
-[![Build e test](https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml/badge.svg)](https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml)
+<h1 align="center">Nexus Optimizer</h1>
+
+<p align="center">
+  <a href="https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml"><img src="https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml/badge.svg" alt="Build e test"></a>
+</p>
 
 Alternativa moderna, sicura e trasparente ai sistemi "cleaner/optimizer" per Windows.
 
@@ -72,8 +78,8 @@ Get-FileHash .\NexusOptimizer.exe -Algorithm SHA256
 Impronte della **v0.1.0-alpha.1**:
 
 ```
-582917ee13399cfeece935209dc03453e39884d1219d9ac1e56c3fdc58675af2  NexusOptimizer.exe
-95eda6d47de16dee5d82721e5bb977352997759720ee2bb7eb43faec5d12988e  NexusOptimizer-win-x64.zip
+25a3a3f493641b089430725b36a2dd268b03b376c5fcad956e13617d1b5b311f  NexusOptimizer.exe
+a526ee8e2b1bc0a160c6dc09adffff1431dadbfb94a8edb8c045384981beaa51  NexusOptimizer-win-x64.zip
 ```
 
 Se non ti fidi di un binario non firmato — posizione ragionevole, e coerente con lo spirito di
@@ -165,6 +171,16 @@ Nessuna telemetria, nessuna metrica gonfiata, nessuna funzione decorativa.
 
 La sezione [Cosa NON fa questo programma](#cosa-non-fa-questo-programma) è parte del
 progetto quanto l'elenco delle funzioni.
+
+## Come è stato sviluppato
+
+Parte di questo progetto è stata realizzata con l'assistenza di un modello di intelligenza
+artificiale (Claude, di Anthropic): stesura di codice, test, documentazione e revisione.
+Le decisioni progettuali, le scelte tecniche e la responsabilità del risultato sono di
+Sbri Digital Studio.
+
+Lo si dichiara qui per la stessa ragione per cui il programma dichiara apertamente cosa fa
+e cosa non fa: se si pretende trasparenza dagli altri, si comincia offrendola.
 
 ## Feedback e contributi
 
