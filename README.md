@@ -174,10 +174,10 @@ progetto quanto l'elenco delle funzioni.
 
 ## Come è stato sviluppato
 
-Parte di questo progetto è stata realizzata con l'assistenza di un modello di intelligenza
-artificiale (Claude, di Anthropic): stesura di codice, test, documentazione e revisione.
-Le decisioni progettuali, le scelte tecniche e la responsabilità del risultato sono di
-Sbri Digital Studio.
+Parte di questo progetto è stata realizzata con l'assistenza di modelli di intelligenza
+artificiale di fornitori diversi — fra gli altri Claude di Anthropic e i modelli di OpenAI —
+impiegati per stesura di codice, test, documentazione e revisione. Le decisioni progettuali,
+le scelte tecniche e la responsabilità del risultato sono di Sbri Digital Studio.
 
 Lo si dichiara qui per la stessa ragione per cui il programma dichiara apertamente cosa fa
 e cosa non fa: se si pretende trasparenza dagli altri, si comincia offrendola.
