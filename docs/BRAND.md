@@ -25,8 +25,8 @@ online e mantiene l'app leggera e nitida a ogni DPI.
 
 Il marchio editabile è stato generato in Canva e verrà aggiornato con il nome Nexus Optimizer:
 
-- [Apri e modifica il logo in Canva](https://www.canva.com/d/09I60FJkWr6tE4u)
-- [Anteprima condivisibile](https://www.canva.com/d/l0CNGf7JrjpVsca)
+- Logo editabile: progetto Canva interno (link non pubblicato)
+- Anteprima condivisibile: progetto Canva interno (link non pubblicato)
 
 Titolo del concept: **Vector Logo of Nexus Optimizer with Clean Lines**. Il simbolo compatto è la
 fonte per l'icona applicazione; la lock-up orizzontale è destinata a installer, sito e

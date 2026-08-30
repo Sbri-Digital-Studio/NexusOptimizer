@@ -30,7 +30,8 @@ Documentazione: [`docs/MODALITA-GAMING.md`](docs/MODALITA-GAMING.md) ·
 [`docs/ARCHITETTURA.md`](docs/ARCHITETTURA.md) ·
 [`docs/SICUREZZA.md`](docs/SICUREZZA.md) · [`docs/PRIVILEGI.md`](docs/PRIVILEGI.md) ·
 [`docs/ROADMAP.md`](docs/ROADMAP.md) · [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) ·
-[`docs/BRAND.md`](docs/BRAND.md)
+[`docs/BRAND.md`](docs/BRAND.md) ·
+[`docs/FEATURE-MATRIX.md`](docs/FEATURE-MATRIX.md)
 
 ## Requisiti
 
