@@ -1,0 +1,149 @@
+<UserControl x:Class="NexusOptimizer.App.Views.ProcessesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:NexusOptimizer.App.Services">
+    <UserControl.Resources>
+        <s:LocaleKeyConverter x:Key="Loc" />
+        <Style x:Key="ProcessSearch" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="FontSize" Value="12.5" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid MaxWidth="1180" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Background="{DynamicResource CardBrush}" CornerRadius="13" Padding="18,14"
+                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.title}" FontSize="11" FontWeight="SemiBold"
+                               Foreground="#B79CFF" />
+                    <TextBlock Text="{Binding Status}" FontSize="11.5" Margin="0,5,0,0"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+                <TextBox Grid.Column="1" Style="{StaticResource ProcessSearch}" Margin="16,0,12,0"
+                         Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.search.tip}" />
+                <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.refresh}"
+                        Command="{Binding RefreshCommand}" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Margin="0,14,0,0" Padding="14,8" CornerRadius="8"
+                Background="{DynamicResource AccentSoftBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.4*" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.col.process}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" />
+                <TextBlock Grid.Column="1" Text="PID" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" />
+                <TextBlock Grid.Column="2" Text="CPU" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" />
+                <TextBlock Grid.Column="3" Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.col.memory}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" />
+                <TextBlock Grid.Column="4" Text="THREAD" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" />
+            </Grid>
+        </Border>
+
+        <ListBox Grid.Row="2" Margin="0,6,0,12" ItemsSource="{Binding Rows}"
+                 SelectedItem="{Binding Selected}" Background="Transparent" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0,1" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border x:Name="Row" Padding="14,8" CornerRadius="7" Background="Transparent">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Row" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Row" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2.4*" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" Foreground="{DynamicResource TextPrimaryBrush}"
+                                   FontSize="12.5" FontWeight="Medium" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="1" Text="{Binding Pid}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                        <TextBlock Grid.Column="2" Text="{Binding CpuText}" Foreground="#B79CFF" FontSize="12" />
+                        <TextBlock Grid.Column="3" Text="{Binding MemoryText}" Foreground="{DynamicResource TextPrimaryBrush}" FontSize="12" />
+                        <TextBlock Grid.Column="4" Text="{Binding Threads}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="3" Background="{DynamicResource CardBrush}" CornerRadius="13" Padding="18,14"
+                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.05*" />
+                    <ColumnDefinition Width="1.25*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Details.Name, TargetNullValue=Seleziona un processo}"
+                               Foreground="{DynamicResource TextPrimaryBrush}" FontSize="14" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Details.Path, TargetNullValue=Percorso e dettagli appariranno qui.}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5"
+                               Margin="0,5,12,0" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Details.Publisher, StringFormat=Publisher: {0}}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" Margin="0,5,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Details.Signature, StringFormat=Firma digitale: {0}}"
+                               Foreground="{DynamicResource TextPrimaryBrush}" FontSize="11" />
+                    <TextBlock Text="{Binding Details.Privilege, StringFormat=Privilegi: {0}}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" Margin="0,5,0,0" />
+                    <TextBlock Text="{Binding Details.ParentPid, StringFormat=PID padre: {0}}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" Margin="0,4,0,0" />
+                    <TextBlock Text="{Binding Details.Sha256, StringFormat=SHA-256: {0}}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" FontSize="10.5" Margin="0,4,0,0"
+                               TextTrimming="CharacterEllipsis" ToolTip="{Binding Details.Sha256}" />
+                </StackPanel>
+                <Button Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.verify}"
+                        Command="{Binding VerifyCommand}" VerticalAlignment="Center"
+                        ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=proc.verify.tip}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

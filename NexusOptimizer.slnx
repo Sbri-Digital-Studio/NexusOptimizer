@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NexusOptimizer.App/NexusOptimizer.App.csproj" />
+    <Project Path="src/NexusOptimizer.Core/NexusOptimizer.Core.csproj" />
+    <Project Path="tests/NexusOptimizer.Tests.Unit/NexusOptimizer.Tests.Unit.csproj" />
+    <Project Path="tests/NexusOptimizer.Tests.Integration/NexusOptimizer.Tests.Integration.csproj" />
+  </Folder>
+</Solution>

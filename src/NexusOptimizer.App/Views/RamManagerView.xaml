@@ -1,0 +1,271 @@
+<UserControl x:Class="NexusOptimizer.App.Views.RamManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:NexusOptimizer.App.Services"
+             xmlns:c="clr-namespace:NexusOptimizer.App.Controls">
+
+    <UserControl.Resources>
+        <s:LocaleKeyConverter x:Key="Loc" />
+        <s:BoolToVisibilityConverter x:Key="BoolVis" />
+
+        <Style x:Key="MemoryCard" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="20,18" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid MaxWidth="1180" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.title}"
+                       FontSize="26" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+            <TextBlock Grid.Row="1"
+                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.subtitle}"
+                       FontSize="12" Margin="1,4,0,16" Foreground="{DynamicResource TextSecondaryBrush}" />
+
+            <!-- RAM: riepilogo + grafico -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource MemoryCard}" MinHeight="252">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <c:RadialGauge Width="150" Height="150" RingThickness="10" Accent="#A64CEB"
+                                       Value="{Binding UsedPercent}" CenterText="{Binding UsedText}"
+                                       SubText="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.used}" />
+                        <Grid Margin="0,18,0,0" Width="250">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.available}"
+                                           FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding AvailableText}" FontSize="18" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource StateGreenBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.total}"
+                                           FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding TotalText}" FontSize="18" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Margin="16,0,0,0" Style="{StaticResource MemoryCard}" MinHeight="252">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.trend}"
+                                       FontSize="12" FontWeight="SemiBold" Foreground="#A64CEB" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.trend.note}"
+                                       FontSize="10.5" Margin="0,3,0,0" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <c:SparkGraph Grid.Row="1" Margin="0,12,0,0" MinHeight="170" Series="{Binding Series}"
+                                      FixedMax="100" Unit="percent" Accent="#A64CEB"
+                                      WindowSeconds="180" Smooth="True" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- VRAM: la riga e' indipendente e non puo' piu' espandere la card azioni -->
+            <Grid Grid.Row="3" Margin="0,16,0,0"
+                  Visibility="{Binding HasVram, Converter={StaticResource BoolVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="360" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource MemoryCard}" MinHeight="244">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <c:NxIcon Kind="gpu" Width="15" Height="15" Margin="0,0,9,0"
+                                      Foreground="#6BD93D" VerticalAlignment="Center" />
+                            <TextBlock FontSize="11" Typography.Capitals="AllSmallCaps" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.title}" />
+                        </StackPanel>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <c:RadialGauge Width="126" Height="126" RingThickness="9" Accent="#6BD93D"
+                                           Value="{Binding VramPercent}" CenterText="{Binding VramUsedText}"
+                                           SubText="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.caption}" />
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                                <TextBlock FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}"
+                                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.used}" />
+                                <TextBlock Text="{Binding VramUsedText}" FontSize="18" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock FontSize="9.5" Margin="0,12,0,0" Foreground="{DynamicResource TextSecondaryBrush}"
+                                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.total}" />
+                                <TextBlock Text="{Binding VramTotalText}" FontSize="18" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource StateGreenBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Margin="16,0,0,0" Style="{StaticResource MemoryCard}" MinHeight="244">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock FontSize="11" Typography.Capitals="AllSmallCaps" Foreground="#6BD93D"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.trend}" />
+                            <TextBlock FontSize="10.5" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.note}" />
+                        </StackPanel>
+                        <c:SparkGraph Grid.Row="1" Margin="0,12,0,0" MinHeight="154" Series="{Binding VramSeries}"
+                                      FixedMax="100" Unit="percent" Accent="#6BD93D"
+                                      WindowSeconds="180" Smooth="True" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Centro azioni -->
+            <Grid Grid.Row="4" Margin="0,22,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.actions.title}"
+                               FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.actions.subtitle}"
+                               FontSize="10.5" Margin="0,3,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="{Binding OptimizeAllButtonText}"
+                        Command="{Binding OptimizeAllCommand}" Style="{StaticResource PrimaryButton}"
+                        MinWidth="210" VerticalAlignment="Center" />
+            </Grid>
+
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Style="{StaticResource MemoryCard}" Margin="0,0,8,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="46" Height="46" CornerRadius="12" Background="#18A64CEB" Margin="0,0,14,0">
+                                <c:NxIcon Kind="memory" Width="25" Height="25" Foreground="#A64CEB" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.ram.title}"
+                                           FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.ram.detail}"
+                                           FontSize="10.5" Margin="0,3,12,0" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" MinWidth="105" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.lastfreed}"
+                                           FontSize="8.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding LastRamReleasedText}" FontSize="17" FontWeight="SemiBold"
+                                           Margin="0,2,0,0" Foreground="{DynamicResource StateGreenBrush}" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Grid.Row="1" Text="{Binding RamActionStatus}" Margin="0,16,0,12"
+                                   FontSize="10.5" TextWrapping="Wrap" MinHeight="30"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <Button Grid.Row="2" Content="{Binding CleanRamButtonText}" Command="{Binding CleanRamCommand}"
+                                Style="{StaticResource PrimaryButton}" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource MemoryCard}" Margin="8,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="46" Height="46" CornerRadius="12" Background="#186BD93D" Margin="0,0,14,0">
+                                <c:NxIcon Kind="gpu" Width="25" Height="25" Foreground="#6BD93D" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.clean.title}"
+                                           FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.clean.detail}"
+                                           FontSize="10.5" Margin="0,3,12,0" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" MinWidth="105" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.vram.last}"
+                                           FontSize="8.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding LastVramActionText}" FontSize="14" FontWeight="SemiBold"
+                                           Margin="0,3,0,0" Foreground="{DynamicResource StateGreenBrush}" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Grid.Row="1" Text="{Binding VramActionStatus}" Margin="0,16,0,12"
+                                   FontSize="10.5" TextWrapping="Wrap" MinHeight="30"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <Button Grid.Row="2" Content="{Binding CleanVramButtonText}" Command="{Binding CleanVramCommand}"
+                                Style="{StaticResource GhostButton}" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Border Grid.Row="6" Margin="0,16,0,4" Background="{DynamicResource AccentSoftBrush}" CornerRadius="11"
+                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,13">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <c:NxIcon Kind="shield" Width="17" Height="17" Margin="0,0,10,0"
+                              Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Top" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ram.safeclean.note}"
+                               FontSize="11" TextWrapping="Wrap" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

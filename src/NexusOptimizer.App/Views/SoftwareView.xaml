@@ -1,0 +1,413 @@
+<UserControl x:Class="NexusOptimizer.App.Views.SoftwareView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:NexusOptimizer.App.Controls"
+             xmlns:s="clr-namespace:NexusOptimizer.App.Services">
+
+    <UserControl.Resources>
+        <s:BoolToVisibilityConverter x:Key="BoolVis" />
+        <s:LocaleKeyConverter x:Key="Loc" />
+
+        <!-- Linguetta dell'area: stessa logica del selettore livello. -->
+        <Style x:Key="AreaTab" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="16,9" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" CornerRadius="10" Padding="{TemplateBinding Padding}"
+                                Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverBrush}" />
+                            </Trigger>
+                            <!-- L'area attiva si riconosce a colpo d'occhio. -->
+                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                <Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                <Setter Property="FontWeight" Value="SemiBold" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RowList" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="0,0,4,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ============================ INTESTAZIONE ============================ -->
+        <Grid Margin="0,0,0,14">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock FontSize="26" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.title}" />
+                <TextBlock FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap" MaxWidth="820" HorizontalAlignment="Left"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.subtitle}" />
+            </StackPanel>
+            <Button Grid.Column="1" Style="{StaticResource GhostButton}" Width="Auto" VerticalAlignment="Top"
+                    Command="{Binding RefreshCommand}"
+                    Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.refresh}" />
+        </Grid>
+
+        <!-- ============================== LINGUETTE ============================== -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
+            <Button Style="{StaticResource AreaTab}" Command="{Binding SelectTabCommand}" CommandParameter="0"
+                    Tag="{Binding ShowApps}">
+                <StackPanel Orientation="Horizontal">
+                    <c:NxIcon Kind="installedApps" Width="16" Height="16" Margin="0,0,8,0" Foreground="#FF9E64" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.tab.apps}" />
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource AreaTab}" Command="{Binding SelectTabCommand}" CommandParameter="1"
+                    Tag="{Binding ShowUpdates}">
+                <StackPanel Orientation="Horizontal">
+                    <c:NxIcon Kind="rocket" Width="16" Height="16" Margin="0,0,8,0" Foreground="#6BD93D" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.tab.updates}" />
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource AreaTab}" Command="{Binding SelectTabCommand}" CommandParameter="2"
+                    Tag="{Binding ShowDrivers}">
+                <StackPanel Orientation="Horizontal">
+                    <c:NxIcon Kind="chip" Width="16" Height="16" Margin="0,0,8,0" Foreground="#57C7FF" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.tab.drivers}" />
+                </StackPanel>
+            </Button>
+            <TextBlock VerticalAlignment="Center" Margin="14,0,0,0" FontSize="11.5" Opacity="0.85"
+                       Foreground="{DynamicResource TextSecondaryBrush}" Text="{Binding Status}" />
+        </StackPanel>
+
+        <!-- ========================= AREA: PROGRAMMI ============================ -->
+        <Grid Grid.Row="2" Visibility="{Binding ShowApps, Converter={StaticResource BoolVis}}">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="330" /></Grid.ColumnDefinitions>
+
+            <Border Background="{DynamicResource CardBrush}" CornerRadius="14" Padding="16,14"
+                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <TextBox Padding="9,7" FontSize="12.5" Background="{DynamicResource WindowBackgroundBrush}"
+                                 Foreground="{DynamicResource TextPrimaryBrush}" CaretBrush="{DynamicResource TextPrimaryBrush}"
+                                 BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                 ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.search}"
+                                 Text="{Binding AppQuery, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                        <ComboBox Grid.Column="1" Width="150" Margin="10,0,0,0" Style="{StaticResource FieldComboBox}"
+                                  ItemsSource="{Binding AppSortOptions}" SelectedIndex="{Binding AppSortIndex}" />
+                    </Grid>
+
+                    <TextBlock Grid.Row="1" Text="{Binding AppsSummary}" FontSize="11" Margin="2,10,0,8" Opacity="0.85"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                    <ListBox Grid.Row="2" Style="{StaticResource RowList}" ItemsSource="{Binding Apps}"
+                             SelectedItem="{Binding SelectedApp}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4" ToolTip="{Binding Location}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="38" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="90" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Width="26" Height="26" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <!-- Logo vero del programma; se non ne dichiara uno, segnaposto neutro. -->
+                                        <Border CornerRadius="7" Background="{DynamicResource HoverBrush}"
+                                                Visibility="{Binding HasIcon, Converter={StaticResource BoolVis}, ConverterParameter=invert}">
+                                            <c:NxIcon Kind="installedApps" Width="14" Height="14" Foreground="#FF9E64" />
+                                        </Border>
+                                        <Image Source="{Binding Icon}" Width="24" Height="24"
+                                               RenderOptions.BitmapScalingMode="HighQuality"
+                                               Visibility="{Binding HasIcon, Converter={StaticResource BoolVis}}" />
+                                    </Grid>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="12.5" FontWeight="Medium"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Publisher}" FontSize="10.5" Opacity="0.8"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2" Text="{Binding Version}" FontSize="11.5" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="11.5" VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="4" Text="{Binding InstalledText}" FontSize="11.5" VerticalAlignment="Center"
+                                               HorizontalAlignment="Right"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Dettaglio del programma selezionato -->
+            <Border Grid.Column="1" Margin="12,0,0,0" Background="{DynamicResource CardBrush}" CornerRadius="14"
+                    Padding="16,14" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <TextBlock TextWrapping="Wrap" FontSize="11.5" VerticalAlignment="Top" Opacity="0.85"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               Visibility="{Binding HasSelectedApp, Converter={StaticResource BoolVis}, ConverterParameter=invert}"
+                               Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.select}" />
+
+                    <StackPanel Visibility="{Binding HasSelectedApp, Converter={StaticResource BoolVis}}">
+                        <TextBlock Text="{Binding SelectedApp.Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="{Binding SelectedApp.Publisher}" FontSize="11.5" Margin="0,3,0,12" Opacity="0.85"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                        <Grid Margin="0,0,0,3">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.field.version}" />
+                            <TextBlock Text="{Binding SelectedApp.Version}" FontSize="11" HorizontalAlignment="Right"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,3">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.field.size}" />
+                            <TextBlock Text="{Binding SelectedApp.SizeText}" FontSize="11" HorizontalAlignment="Right"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,3">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.field.installed}" />
+                            <TextBlock Text="{Binding SelectedApp.InstalledText}" FontSize="11" HorizontalAlignment="Right"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,3">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.field.scope}" />
+                            <TextBlock Text="{Binding SelectedApp.ScopeText}" FontSize="11" HorizontalAlignment="Right"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,12">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.field.arch}" />
+                            <TextBlock Text="{Binding SelectedApp.ArchitectureText}" FontSize="11" HorizontalAlignment="Right"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                        </Grid>
+
+                        <TextBlock Text="{Binding SelectedApp.Location}" FontSize="10.5" TextWrapping="Wrap" Margin="0,0,0,12"
+                                   Opacity="0.75" Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                        <Button Style="{StaticResource PrimaryButton}" Height="38" Click="UninstallClicked"
+                                IsEnabled="{Binding SelectedApp.CanUninstall}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.uninstall}" />
+                        <Button Style="{StaticResource GhostButton}" Width="Auto" Margin="0,8,0,0"
+                                Command="{Binding OpenLocationCommand}"
+                                Visibility="{Binding SelectedApp.HasLocation, Converter={StaticResource BoolVis}}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.openfolder}" />
+                        <Button Style="{StaticResource GhostButton}" Width="Auto" Margin="0,8,0,0"
+                                Command="{Binding OpenWindowsAppsCommand}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.windowsapps}" />
+                        <TextBlock FontSize="10.5" TextWrapping="Wrap" Margin="0,12,0,0" Opacity="0.8"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=soft.uninstall.note}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ======================== AREA: AGGIORNAMENTI ========================= -->
+        <Border Grid.Row="2" Visibility="{Binding ShowUpdates, Converter={StaticResource BoolVis}}"
+                Background="{DynamicResource CardBrush}" CornerRadius="14" Padding="18,16"
+                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" /><RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=pkg.title}" />
+                <TextBlock Grid.Row="1" FontSize="11.5" Margin="0,6,0,12" TextWrapping="Wrap" MaxWidth="860"
+                           HorizontalAlignment="Left" Foreground="{DynamicResource TextSecondaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=pkg.note}" />
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,12">
+                    <Button Style="{StaticResource PrimaryButton}" Width="Auto" Padding="18,0" Height="38"
+                            Command="{Binding ScanPackagesCommand}"
+                            Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=pkg.scan}" />
+                    <TextBlock Text="{Binding PackageStatus}" VerticalAlignment="Center" Margin="14,0,0,0"
+                               FontSize="11.5" TextWrapping="Wrap" MaxWidth="620"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+
+                <ListBox Grid.Row="3" Style="{StaticResource RowList}" ItemsSource="{Binding PackageUpdates}"
+                         Visibility="{Binding HasPackageUpdates, Converter={StaticResource BoolVis}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,4" Padding="12,10" CornerRadius="10"
+                                    Background="{DynamicResource WindowBackgroundBrush}"
+                                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="180" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="12.5" FontWeight="Medium"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Id}" FontSize="10" Opacity="0.7"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                Orientation="Horizontal">
+                                        <TextBlock Text="{Binding CurrentVersion}" FontSize="11.5" Opacity="0.8"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        <TextBlock Text="  →  " FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        <TextBlock Text="{Binding AvailableVersion}" FontSize="11.5" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource StateGreenBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Style="{StaticResource GhostButton}" Width="Auto" Margin="14,0,0,0"
+                                            Command="{Binding DataContext.UpgradePackageCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                            CommandParameter="{Binding}"
+                                            Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=pkg.upgrade}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- ============================ AREA: DRIVER ============================ -->
+        <Grid Grid.Row="2" Visibility="{Binding ShowDrivers, Converter={StaticResource BoolVis}}">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="330" /></Grid.ColumnDefinitions>
+
+            <Border Background="{DynamicResource CardBrush}" CornerRadius="14" Padding="16,14"
+                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                        <TextBox Padding="9,7" FontSize="12.5" Background="{DynamicResource WindowBackgroundBrush}"
+                                 Foreground="{DynamicResource TextPrimaryBrush}" CaretBrush="{DynamicResource TextPrimaryBrush}"
+                                 BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                 Text="{Binding DriverQuery, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                        <CheckBox Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center"
+                                  Style="{StaticResource QuickToggle}" IsChecked="{Binding OnlyProblems}"
+                                  Foreground="{DynamicResource TextPrimaryBrush}" FontSize="12"
+                                  Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.onlyproblems}" />
+                    </Grid>
+
+                    <TextBlock Grid.Row="1" Text="{Binding DriversSummary}" FontSize="11" Margin="2,10,0,8" Opacity="0.85"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                    <ListBox Grid.Row="2" Style="{StaticResource RowList}" ItemsSource="{Binding Drivers}"
+                             SelectedItem="{Binding SelectedDriver}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="34" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="120" />
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="120" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="26" Height="26" CornerRadius="7" HorizontalAlignment="Left"
+                                            VerticalAlignment="Center" Background="{DynamicResource HoverBrush}">
+                                        <c:NxIcon Kind="{Binding IconKind}" Width="15" Height="15"
+                                                  Foreground="{Binding IconBrush}" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Device}" FontSize="12.5" FontWeight="Medium"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Provider}" FontSize="10.5" Opacity="0.8"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2" Text="{Binding DeviceClass}" FontSize="11" VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="3" Text="{Binding Version}" FontSize="11" VerticalAlignment="Center"
+                                               HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Grid.Column="4" Text="{Binding StateText}" FontSize="11" VerticalAlignment="Center"
+                                               HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"
+                                               Foreground="{Binding StateBrush}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Margin="12,0,0,0" Background="{DynamicResource CardBrush}" CornerRadius="14"
+                    Padding="16,14" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"
+                                   Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.update.title}" />
+                        <TextBlock FontSize="11" Margin="0,6,0,12" TextWrapping="Wrap" Opacity="0.85"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.update.note}" />
+
+                        <Button Style="{StaticResource PrimaryButton}" Height="38" Command="{Binding SearchDriverUpdatesCommand}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.search}" />
+                        <TextBlock Text="{Binding UpdateStatus}" FontSize="11" Margin="0,9,0,0" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                        <ItemsControl ItemsSource="{Binding DriverUpdates}" Margin="0,10,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,3" Padding="10,8" CornerRadius="9"
+                                            Background="{DynamicResource WindowBackgroundBrush}"
+                                            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                                        <TextBlock Text="{Binding Title}" FontSize="11" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button Style="{StaticResource GhostButton}" Width="Auto" Margin="0,12,0,0"
+                                Command="{Binding OpenWindowsUpdateCommand}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.openwu}" />
+                        <Button Style="{StaticResource GhostButton}" Width="Auto" Margin="0,8,0,0"
+                                Command="{Binding OpenDeviceManagerCommand}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.opendevmgmt}" />
+                        <Button Style="{StaticResource GhostButton}" Width="Auto" Margin="0,8,0,0"
+                                Command="{Binding OpenVendorPageCommand}"
+                                Visibility="{Binding SelectedDriver.HasVendorPage, Converter={StaticResource BoolVis}}"
+                                Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=drv.vendor}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms usato esclusivamente per NotifyIcon (system tray): niente global using impliciti -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsFormsImplicitUsings>false</EnableWindowsFormsImplicitUsings>
+    <AssemblyName>NexusOptimizer</AssemblyName>
+    <RootNamespace>NexusOptimizer.App</RootNamespace>
+    <ApplicationIcon>Assets\NexusOptimizer.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>it;en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <!--
+    Versione e metadati comuni ereditati da Directory.Build.props (0.1.0-alpha).
+    Dipendenze: solo pacchetti ufficiali Microsoft.
+    - DependencyInjection : composizione modulare dei servizi
+    - PerformanceCounter   : metriche CPU/disk/rete/GPU via PDH (API Windows documentate)
+    - ServiceController    : conteggio servizi e sospensione reversibile in Modalità Gaming
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.1" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NexusOptimizer.Core\NexusOptimizer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\NexusOptimizer.ico" />
+  </ItemGroup>
+
+</Project>
+

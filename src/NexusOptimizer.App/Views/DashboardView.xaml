@@ -1,0 +1,430 @@
+<UserControl x:Class="NexusOptimizer.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:s="clr-namespace:NexusOptimizer.App.Services"
+             xmlns:c="clr-namespace:NexusOptimizer.App.Controls">
+
+    <UserControl.Resources>
+        <s:BoolToVisibilityConverter x:Key="BoolVis" />
+        <s:LocaleKeyConverter x:Key="Loc" />
+        <Style x:Key="DashboardActionCard" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Card" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Card" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.85" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RailButton" TargetType="Button" BasedOn="{StaticResource DashboardActionCard}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="4,7" />
+            <Setter Property="Margin" Value="2" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="368" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ================= COLONNA PRINCIPALE ================= -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="{Binding OverviewTitle}" FontSize="21" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.subtitle}" FontSize="11.5"
+                           Margin="1,4,0,11" Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+
+                    <c:MetricCard Grid.Row="0" Grid.Column="0" CardTitle="CPU" CardValue="{Binding CpuText}"
+                                  CardProgress="{Binding CpuProgress}" CardFixedMax="100" CardAccent="#1DBDF2"
+                                  CardAnimationsEnabled="{Binding AnimationsEnabled}" CardSeries="{Binding CpuSeries}"
+                                  CardCaption="Utilizzo"
+                                  CardStat1Label="Temp." CardStat1Value="{Binding CpuTempText}"
+                                  CardStat2Label="Frequenza" CardStat2Value="{Binding CpuClockText}"
+                                  CardStat3Label="Core / Thread" CardStat3Value="{Binding CpuCoreText}" />
+
+                    <c:MetricCard Grid.Row="0" Grid.Column="1" Margin="12,0,0,0" CardTitle="RAM" CardValue="{Binding RamText}"
+                                  CardProgress="{Binding RamProgress}" CardFixedMax="100" CardAccent="#A64CEB"
+                                  CardAnimationsEnabled="{Binding AnimationsEnabled}" CardSeries="{Binding RamSeries}"
+                                  CardCaption="Utilizzo"
+                                  CardStat1Label="Usata" CardStat1Value="{Binding RamUsedValueText}"
+                                  CardStat2Label="Disponibile" CardStat2Value="{Binding RamAvailableValueText}"
+                                  CardStat3Label="Cache di sistema" CardStat3Value="{Binding RamCachedText}" />
+
+                    <c:MetricCard Grid.Row="0" Grid.Column="2" Margin="12,0,0,0" CardTitle="GPU" CardValue="{Binding GpuText}"
+                                  CardProgress="{Binding GpuProgress}" CardFixedMax="100" CardAccent="#6BD93D"
+                                  CardAnimationsEnabled="{Binding AnimationsEnabled}" CardSeries="{Binding GpuSeries}"
+                                  CardCaption="Utilizzo"
+                                  CardStat1Label="Temp." CardStat1Value="{Binding GpuTempText}"
+                                  CardStat2Label="VRAM" CardStat2Value="{Binding GpuVramText}"
+                                  CardStat2Progress="{Binding GpuVramPercent}"
+                                  CardStat3Label="Frequenza" CardStat3Value="{Binding GpuClockText}" />
+
+                    <c:MetricCard Grid.Row="1" Grid.Column="0" Margin="0,12,0,0" CardTitle="DISCO (C:)" CardValue="{Binding DiskText}"
+                                  CardProgress="{Binding DiskProgress}" CardFixedMax="100" CardAccent="#2F8CFF"
+                                  CardAnimationsEnabled="{Binding AnimationsEnabled}" CardSeries="{Binding DiskSeries}"
+                                  CardCaption="Attività"
+                                  CardStat1Label="Lettura" CardStat1Value="{Binding DiskReadText}"
+                                  CardStat2Label="Scrittura" CardStat2Value="{Binding DiskWriteText}"
+                                  CardStat3Label="Temperatura" CardStat3Value="{Binding DiskTempText}" />
+
+                    <c:MetricCard Grid.Row="1" Grid.Column="1" Margin="12,12,0,0" CardTitle="RETE" CardValue=""
+                                  CardShowGauge="False" CardAccent="#16C7C9" CardAnimationsEnabled="{Binding AnimationsEnabled}"
+                                  CardSeries="{Binding DownSeries}" CardUnit="bytesPerSecond"
+                                  CardStat1Label="↓ Download" CardStat1Value="{Binding NetDownText}"
+                                  CardStat2Label="↑ Upload" CardStat2Value="{Binding NetUpText}"
+                                  CardStat3Label="Stato" CardStat3Value="{Binding NetStatusText}"
+                                  CardStat3Brush="{Binding NetStatusBrush}" />
+
+                    <c:MetricCard Grid.Row="1" Grid.Column="2" Margin="12,12,0,0" CardTitle="PROCESSI" CardValue="{Binding ProcText}"
+                                  CardShowGauge="False" CardAccent="#F0A500" CardAnimationsEnabled="{Binding AnimationsEnabled}"
+                                  CardSeries="{Binding ProcessSeries}" CardUnit="numeric" CardCaption="Attivi"
+                                  CardStat1Label="Utente" CardStat1Value="{Binding ProcUserText}"
+                                  CardStat2Label="Sistema" CardStat2Value="{Binding ProcSystemText}"
+                                  CardStat3Label="Servizi" CardStat3Value="{Binding ProcServiceText}" />
+                </Grid>
+
+                <!-- Striscia uptime / energia / stato -->
+                <Border Margin="0,12,0,0" Background="{DynamicResource CardBrush}" CornerRadius="12"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="1.25*" /></Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <c:NxIcon Kind="clock" Width="28" Height="28" Foreground="#B8C2CC" Margin="0,0,12,0" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.uptime}" FontSize="9" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding UptimeDaysText}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding UptimeClockText}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <c:NxIcon Kind="leaf" Width="27" Height="27" Foreground="#6BD93D" Margin="0,0,12,0" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.powerplan}" FontSize="9" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding PowerPlanText}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding EnergySub}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <c:NxIcon Kind="shield" Width="28" Height="28" Foreground="{Binding HealthScoreBrush}" Margin="0,0,12,0" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.systemstate}" FontSize="9" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding SystemStateTitle}" FontSize="14" FontWeight="SemiBold" Foreground="{Binding HealthScoreBrush}" />
+                                <TextBlock Text="{Binding SystemSentence}" FontSize="10" TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Smart Clean + Optimizer -->
+                <Grid Margin="0,10,0,0" Height="316">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="0.92*" /><ColumnDefinition Width="1.08*" /></Grid.ColumnDefinitions>
+
+                    <Border Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,14">
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="SMART CLEAN" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding CleanStatusText}" FontSize="10.5" Margin="0,3,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0,10,0,4">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="146" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <c:DonutChart Width="126" Height="126" RingThickness="12"
+                                              VerticalAlignment="Center" HorizontalAlignment="Left"
+                                              Segments="{Binding CleanGroups}"
+                                              CenterText="{Binding CleanTotalText}" SubText="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.clean.found}" />
+                                <ItemsControl Grid.Column="1" ItemsSource="{Binding CleanGroups}" VerticalAlignment="Center">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,7">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Width="20" Height="20" CornerRadius="6" Margin="0,0,9,0"
+                                                        Background="{DynamicResource WindowBackgroundBrush}">
+                                                    <c:NxIcon Kind="{Binding IconKind}" Width="11" Height="11" Foreground="{Binding Accent}" />
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="10.5" VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <TextBlock Grid.Column="2" Text="{Binding SizeText}" FontSize="10.5" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="10,0,0,0"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+
+                            <TextBlock Grid.Row="2" Text="{Binding CleanFilesText}" FontSize="10" Margin="0,0,0,9"
+                                       HorizontalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="0.72*" /><ColumnDefinition Width="1.28*" /></Grid.ColumnDefinitions>
+                                <Button Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.details}" Style="{StaticResource GhostButton}" Command="{Binding NavigateCommand}" CommandParameter="nav.cleancat" Margin="0,0,9,0" />
+                                <Button Grid.Column="1" Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.clean.action}" Style="{StaticResource PrimaryButton}" Command="{Binding AnalyzeCommand}" ToolTip="{Binding AnalyzeTooltip}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Margin="12,0,0,0" Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,14">
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="OPTIMIZER" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.opt.available}" FontSize="10.5" Margin="0,3,0,8" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <!-- La card mostra tutte le ottimizzazioni: quando non ci stanno
+                                 in altezza si scorre, invece di tagliare l'ultima riga. -->
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                            <ItemsControl ItemsSource="{Binding Optimizer.Items}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Height="34" Margin="0,0,0,4" Padding="8,2" CornerRadius="9"
+                                                Background="{DynamicResource WindowBackgroundBrush}"
+                                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Opacity" Value="1" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                            <Setter Property="Opacity" Value="0.55" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="32" /><ColumnDefinition Width="*" /><ColumnDefinition Width="62" /><ColumnDefinition Width="52" /><ColumnDefinition Width="44" /></Grid.ColumnDefinitions>
+                                                <Border Width="25" Height="25" CornerRadius="7" Background="{DynamicResource AccentSoftBrush}" HorizontalAlignment="Left">
+                                                    <c:NxIcon Kind="{Binding IconKind}" Width="14" Height="14" Foreground="{Binding Accent}" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding Detail}" FontSize="8.4" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.opt.benefit}" FontSize="7.4" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" />
+                                                    <TextBlock Text="{Binding Benefit}" FontSize="8.6" Foreground="{Binding BenefitBrush}" HorizontalAlignment="Right" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.opt.risk}" FontSize="7.4" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" />
+                                                    <TextBlock Text="{Binding Risk}" FontSize="8.6" Foreground="{Binding RiskBrush}" HorizontalAlignment="Right" />
+                                                </StackPanel>
+                                                <Grid Grid.Column="4" Width="38" HorizontalAlignment="Right">
+                                                    <CheckBox Style="{StaticResource QuickToggle}" HorizontalAlignment="Right"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                              IsEnabled="{Binding IsUnlocked}"
+                                                              Visibility="{Binding IsUnlocked, Converter={StaticResource BoolVis}}"
+                                                              ToolTip="{Binding Detail}" />
+                                                    <Border Width="28" Height="24" CornerRadius="7"
+                                                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                            Background="{DynamicResource AccentSoftBrush}"
+                                                            BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1"
+                                                            Visibility="{Binding IsLocked, Converter={StaticResource BoolVis}}"
+                                                            ToolTip="{Binding LockText}">
+                                                        <c:NxIcon Kind="shield" Width="13" Height="13"
+                                                                  Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    </Border>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            </ScrollViewer>
+                            <Button Grid.Row="2" Content="{Binding Optimizer.PrepareButtonText}" Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding ApplyOptimizerCommand}" Margin="0,9,0,0"
+                                    ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.opt.tip}" />
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Sicurezza, privacy e ripristino -->
+                <Border Margin="0,10,0,0" Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="18,11">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.05*" />
+                            <ColumnDefinition Width="1.0*" />
+                            <ColumnDefinition Width="0.95*" />
+                            <ColumnDefinition Width="1.0*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="1.75*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.privacy.title}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock Text="{Binding SecuritySub}" FontSize="10" Margin="0,3,0,0" Foreground="{DynamicResource StateGreenBrush}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <c:NxIcon Kind="shield" Width="21" Height="21" Foreground="{DynamicResource StateGreenBrush}" Margin="0,0,9,0" />
+                            <StackPanel><TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.privacy.tracking}" FontSize="10.5" Foreground="{DynamicResource TextPrimaryBrush}" /><TextBlock Text="{Binding SecurityStatus}" FontSize="9" Foreground="{DynamicResource StateGreenBrush}" /></StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <c:NxIcon Kind="globe" Width="21" Height="21" Foreground="{DynamicResource AccentBrush}" Margin="0,0,9,0" />
+                            <StackPanel><TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.privacy.appdata}" FontSize="10.5" Foreground="{DynamicResource TextPrimaryBrush}" /><TextBlock Text="{Binding LocalDataStatus}" FontSize="9" Foreground="{DynamicResource StateGreenBrush}" /></StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                            <c:NxIcon Kind="broom" Width="21" Height="21" Foreground="#16C7C9" Margin="0,0,9,0" />
+                            <StackPanel><TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.privacy.autoclean}" FontSize="10.5" Foreground="{DynamicResource TextPrimaryBrush}" /><TextBlock Text="{Binding AutoCleanStatus}" FontSize="9" Foreground="{DynamicResource TextSecondaryBrush}" /></StackPanel>
+                        </StackPanel>
+                        <Rectangle Grid.Column="4" Width="1" Margin="14,2" Fill="{DynamicResource SeparatorBrush}" />
+                        <Grid Grid.Column="5">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.restore.title}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.restore.sub}" FontSize="9.5" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource GhostButton}" VerticalAlignment="Center"
+                                    Padding="12,7" FontSize="10.5" Command="{Binding NavigateCommand}" CommandParameter="nav.history">
+                                <StackPanel Orientation="Horizontal">
+                                    <c:NxIcon Kind="history" Width="14" Height="14" Foreground="{DynamicResource AccentBrush}" Margin="0,0,7,0" />
+                                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.restore.action}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <!-- ===================== RAIL DESTRA ===================== -->
+            <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                <Border Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,14">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,74,0">
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.mypc.title}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.mypc.sub}" FontSize="10.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <c:PcTowerIcon Width="72" Height="82" Margin="0,-6,-2,0"
+                                       HorizontalAlignment="Right" VerticalAlignment="Top" />
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding SystemSummary.Facts}" Margin="0,14,0,14">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,9">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                        <Border Width="28" Height="28" CornerRadius="8" Margin="0,0,10,0"
+                                                Background="{DynamicResource WindowBackgroundBrush}" VerticalAlignment="Top">
+                                            <c:NxIcon Kind="{Binding IconKind}" Width="15" Height="15" Foreground="{Binding Accent}" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Title}" FontSize="10.5" TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+                                            <TextBlock Text="{Binding Detail}" FontSize="8.8" Margin="0,1,0,0" TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Grid.Row="2" Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.mypc.action}" Style="{StaticResource PrimaryButton}" Command="{Binding NavigateCommand}" CommandParameter="nav.systeminfo" />
+                    </Grid>
+                </Border>
+
+                <Border Margin="0,12,0,0" Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,14">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.disks.title}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.disks.sub}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.disks.action}" Style="{StaticResource GhostButton}" Command="{Binding NavigateCommand}" CommandParameter="nav.diskmanager" Padding="8,4" FontSize="10.5" Margin="10,0,0,0" />
+                        </Grid>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding SystemSummary.Disks}" Margin="0,9,0,5" MaxHeight="220">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource GhostButton}" Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="nav.diskmanager" Padding="6,8" Margin="0,0,0,4" BorderBrush="Transparent" HorizontalContentAlignment="Stretch">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                            <c:NxIcon Kind="disk" Width="20" Height="20" Foreground="{Binding StateBrush}" Margin="0,1,10,0" VerticalAlignment="Top" />
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Model}" FontSize="10.5" FontWeight="Medium" TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <TextBlock Text="{Binding TypeText}" FontSize="9" Margin="0,1,0,0" TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                <!-- Barra di riempimento: si legge a colpo d'occhio anche senza l'anello. -->
+                                                <Grid Height="4" Margin="0,5,6,4">
+                                                    <Border CornerRadius="2" Background="{DynamicResource SeparatorBrush}" />
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="{Binding UsedStar}" />
+                                                            <ColumnDefinition Width="{Binding FreeStar}" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Border CornerRadius="2" Background="{Binding StateBrush}" />
+                                                    </Grid>
+                                                </Grid>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding HealthText}" FontSize="9" Foreground="{Binding StateBrush}" />
+                                                    <TextBlock Text="·" FontSize="9" Margin="5,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    <TextBlock Text="{Binding UsageText}" FontSize="9" TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <c:RadialGauge Grid.Column="2" Width="44" Height="44" RingThickness="4" Margin="8,0,0,0"
+                                                           VerticalAlignment="Center" Value="{Binding UsedPercent}"
+                                                           CenterText="{Binding UsedPercentText}" SubText=""
+                                                           Accent="#34C759" AnimationsEnabled="False" />
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Grid.Row="2" Text="{Binding SystemSummary.PrimaryDisk, StringFormat=Disco di sistema: {0}}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </Grid>
+                </Border>
+
+                <Border Margin="0,12,0,0" Background="{DynamicResource CardBrush}" CornerRadius="12" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1" Padding="16,14">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.tools.title}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=home.tools.sub}" FontSize="10" Margin="0,2,0,9" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <ItemsControl ItemsSource="{Binding QuickTools}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="4" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Button Style="{StaticResource RailButton}" Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding TargetId}" ToolTip="{Binding Detail}">
+                                    <StackPanel HorizontalAlignment="Center"><Border Width="32" Height="32" CornerRadius="9" Background="{DynamicResource AccentSoftBrush}"><c:NxIcon Kind="{Binding IconKind}" Width="17" Height="17" Foreground="{Binding Accent}" /></Border><TextBlock Text="{Binding Title}" FontSize="8" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0" Foreground="{DynamicResource TextPrimaryBrush}" /></StackPanel>
+                                </Button>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

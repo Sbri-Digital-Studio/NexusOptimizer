@@ -1,0 +1,111 @@
+<Window x:Class="NexusOptimizer.App.Services.OnboardingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:s="clr-namespace:NexusOptimizer.App.Services"
+        xmlns:c="clr-namespace:NexusOptimizer.App.Controls"
+        Title="Nexus Optimizer — Configurazione iniziale" Icon="/NexusOptimizer;component/Assets/NexusOptimizer.ico"
+        Width="820" Height="560" MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        FontFamily="Segoe UI Variable Display, Segoe UI">
+
+    <Window.Resources>
+        <s:LocaleKeyConverter x:Key="Loc" />
+        <Style x:Key="StepLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Margin" Value="0,0,0,14" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="{DynamicResource SidebarBrush}" Padding="30,32">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <Border Width="52" Height="52" CornerRadius="14" Background="{DynamicResource AccentSoftBrush}">
+                        <c:NxIcon Kind="nexus" Width="31" Height="31" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  Foreground="{DynamicResource AccentBrush}" />
+                    </Border>
+                    <TextBlock Text="Nexus Optimizer" FontSize="20" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,18,0,4" />
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.tagline}" FontSize="12.5" TextWrapping="Wrap"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,24">
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.step1}"
+                               Style="{StaticResource StepLabel}" />
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.step2}"
+                               Style="{StaticResource StepLabel}" />
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.step3}"
+                               Style="{StaticResource StepLabel}" />
+                    <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.step4}"
+                               Style="{StaticResource StepLabel}" Margin="0" />
+                </StackPanel>
+
+                <Border Grid.Row="2" Padding="12" CornerRadius="10" Background="{DynamicResource CardBrush}"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.safe.label}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                        <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.safe.note}"
+                                   FontSize="11.5" TextWrapping="Wrap" Margin="0,5,0,0"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="48,42,48,32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.eyebrow}"
+                           FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock FontSize="28" FontWeight="SemiBold" Margin="0,8,0,0"
+                           Foreground="{DynamicResource TextPrimaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.title}" />
+                <TextBlock FontSize="13.5" Margin="0,8,0,0" TextWrapping="Wrap"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.subtitle}" />
+            </StackPanel>
+
+            <ContentControl Grid.Row="1" x:Name="PageHost" Margin="0,28,0,18" VerticalContentAlignment="Center" />
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,22,0">
+                    <TextBlock x:Name="StepLabelText" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <ProgressBar x:Name="StepProgress" Minimum="0" Maximum="4" Height="4" Value="1"
+                                 Margin="0,8,0,0" Foreground="{DynamicResource AccentBrush}" Background="{DynamicResource SeparatorBrush}" />
+                </StackPanel>
+
+                <Button Grid.Column="1" x:Name="BackBtn" Style="{StaticResource GhostButton}"
+                        Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.back}"
+                        Margin="0,0,10,0" Click="OnBack" />
+                <Button Grid.Column="2" x:Name="NextBtn" Style="{StaticResource PrimaryButton}"
+                        Content="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ob.next}"
+                        Click="OnNext" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

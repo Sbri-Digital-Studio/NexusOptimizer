@@ -1,0 +1,27 @@
+<Project>
+
+  <!-- Proprieta' comuni al prodotto Nexus Optimizer -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!--
+      Suppressioni deliberate:
+      - CA1822   : le property legate da XAML richiedono accesso a istanza (non possono essere static).
+      - CA1859/CA1725 : cosmesi di tipo/parametri, nessun impatto funzionale.
+      - CS8601  : il dizionario statico della localizzazione non è mai null a runtime.
+    -->
+    <NoWarn>$(NoWarn);CA1822;CA1859;CA1725;CS8601;CA1707</NoWarn>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>alpha.1</VersionSuffix>
+    <Company>Nexus Optimizer</Company>
+    <Product>Nexus Optimizer</Product>
+    <AssemblyTitle>Nexus Optimizer</AssemblyTitle>
+    <FileDescription>Nexus Optimizer</FileDescription>
+    <Description>Ottimizzazione locale e prudente del PC Windows</Description>
+  </PropertyGroup>
+
+</Project>

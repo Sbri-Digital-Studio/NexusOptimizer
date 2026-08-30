@@ -1,0 +1,25 @@
+# Build e test
+**/bin/
+**/obj/
+TestResults/
+*.trx
+coverage*.xml
+coverage*.json
+
+# Pacchetti generati: rigenerabili con Installer/Publish.ps1
+Installer/publish/
+Installer/output/
+Installer/NexusOptimizer-*.zip
+
+# IDE e sistema operativo
+.vs/
+.idea/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+
+# Artefatti di distribuzione nella root (rigenerabili con Installer/Publish.ps1)
+# Superano i limiti GitHub: pubblicarli come asset di una Release, non nel repo.
+/NexusOptimizer-Portable.exe
+/NexusOptimizer-*.zip

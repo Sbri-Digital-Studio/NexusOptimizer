@@ -1,0 +1,508 @@
+<Window x:Class="NexusOptimizer.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:NexusOptimizer.App.ViewModels"
+        xmlns:v="clr-namespace:NexusOptimizer.App.Views"
+        xmlns:c="clr-namespace:NexusOptimizer.App.Controls"
+        xmlns:s="clr-namespace:NexusOptimizer.App.Services"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="Nexus Optimizer" Icon="/NexusOptimizer;component/Assets/NexusOptimizer.ico" Height="960" Width="1560" MinWidth="1240" MinHeight="800"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="CanResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        FontFamily="Segoe UI Variable Display, Segoe UI">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="64" ResizeBorderThickness="6" GlassFrameThickness="0"
+                            CornerRadius="0" UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <s:LocaleKeyConverter x:Key="Loc" />
+        <s:BoolToVisibilityConverter x:Key="BoolVis" />
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><v:DashboardView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CleanCleanViewModel}"><v:CleanView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SystemInfoViewModel}"><v:SystemInfoView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PerformanceViewModel}"><v:PerformanceView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProcessesViewModel}"><v:ProcessesView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StartupViewModel}"><v:StartupView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DiagnosticsViewModel}"><v:DiagnosticsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HistoryViewModel}"><v:HistoryView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><v:SettingsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:OptimizerViewModel}"><v:OptimizerView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RamManagerViewModel}"><v:RamManagerView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DiskManagerViewModel}"><v:DiskManagerView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PrivacyGuardViewModel}"><v:PrivacyGuardView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ToolsViewModel}"><v:ToolsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:GamingViewModel}"><v:GamingView /></DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SoftwareViewModel}"><v:SoftwareView /></DataTemplate>
+
+        <!-- Pulsante della barra titolo: icona + etichetta, hit-test dentro il chrome. -->
+        <Style x:Key="TitleBarButton" TargetType="Button">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource HoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.72" /></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CaptionButton" TargetType="Button">
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="64" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CaptionBackground" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CaptionBackground" Property="Background" Value="{DynamicResource HoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.72" /></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CloseCaptionButton" TargetType="Button" BasedOn="{StaticResource CaptionButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="CaptionBackground" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CaptionBackground" Property="Background" Value="#E81123" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.76" /></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="268" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ============================= BARRA TITOLO ============================= -->
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource SidebarBrush}"
+                BorderBrush="{DynamicResource SeparatorBrush}" BorderThickness="0,0,0,1"
+                MouseLeftButtonDown="TitleBarMouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="268" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Lock-up del marchio -->
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
+                    <Border Width="40" Height="40" CornerRadius="12">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#2F8CFF" Offset="0" />
+                                <GradientStop Color="#7A4CEB" Offset="1" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <c:NxIcon Kind="nexus" Width="21" Height="21" Foreground="#FFFFFF" />
+                    </Border>
+                    <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="NEXUS" FontSize="14.5" FontWeight="Bold" LineHeight="16"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="OPTIMIZER" FontSize="14.5" FontWeight="Bold" LineHeight="16"
+                                   LineStackingStrategy="BlockLineHeight"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Selettore livello modalità -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left"
+                            VerticalAlignment="Center" Margin="22,0,0,0">
+                    <Button Style="{StaticResource TitleBarButton}" Width="34" Padding="0" FontSize="17"
+                            Command="{Binding GoBackCommand}" Content="←" AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.back.tip}" ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.back.tip}"
+                            Margin="0,0,10,0"
+                            Visibility="{Binding CanGoBack, Converter={StaticResource BoolVis}}" />
+
+                    <ToggleButton x:Name="ModeToggle" Cursor="Hand" Focusable="False"
+                                  AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.mode.tip}"
+                                  shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                                  IsChecked="{Binding IsModePickerOpen, Mode=TwoWay}"
+                                  ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.mode.tip}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="Pill" Padding="13,7" CornerRadius="10"
+                                        Background="{DynamicResource CardBrush}"
+                                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <c:NxIcon Kind="shield" Width="15" Height="15" Margin="0,0,8,0"
+                                                  Foreground="{Binding ModeBrush}" />
+                                        <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.mode.active}" FontSize="11" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        <TextBlock Text="{Binding ModeDisplayName}" FontSize="11" FontWeight="SemiBold"
+                                                   VerticalAlignment="Center" Foreground="{Binding ModeBrush}" />
+                                        <Path Data="M 0 0 L 4 4 L 8 0" Margin="12,2,0,0" VerticalAlignment="Center"
+                                              Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.5"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Pill" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="Pill" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+
+                    <Popup IsOpen="{Binding IsModePickerOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=ModeToggle}"
+                           Placement="Bottom" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                        <Border Margin="0,6,0,0" Padding="7" CornerRadius="12" MinWidth="288"
+                                Background="{DynamicResource CardBrush}"
+                                BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                            <ItemsControl ItemsSource="{Binding ModeLevels}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource ModeLevelButton}"
+                                                Command="{Binding DataContext.SetModeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+
+                <!-- Azioni globali + comandi finestra -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <!-- Campanella avvisi: il badge si accende solo con avvisi non letti -->
+                    <Grid VerticalAlignment="Center" Margin="0,0,2,0">
+                        <ToggleButton x:Name="BellToggle" Cursor="Hand" Focusable="False"
+                                      AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=notif.tooltip}"
+                                      shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                                      IsChecked="{Binding Notifications.IsOpen, Mode=TwoWay}"
+                                      ToolTip="{Binding Notifications.BellTooltip}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="BellBg" Background="Transparent" CornerRadius="9" Padding="11,8">
+                                        <Grid>
+                                            <c:NxIcon Kind="bell" Width="17" Height="17"
+                                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            <Border HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                    Margin="0,-5,-7,0" MinWidth="15" Height="15" CornerRadius="999"
+                                                    Background="#E5484D"
+                                                    Visibility="{Binding Notifications.HasUnread, Converter={StaticResource BoolVis}}">
+                                                <TextBlock Text="{Binding Notifications.UnreadText}" FontSize="9"
+                                                           FontWeight="SemiBold" Foreground="White" Margin="4,0"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="BellBg" Property="Background" Value="{DynamicResource HoverBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="BellBg" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+
+                        <Popup IsOpen="{Binding Notifications.IsOpen, Mode=TwoWay}"
+                               PlacementTarget="{Binding ElementName=BellToggle}" Placement="Bottom"
+                               StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade"
+                               HorizontalOffset="-322">
+                            <Border Margin="0,6,12,12" Padding="6" CornerRadius="12" Width="382"
+                                    Background="{DynamicResource CardBrush}"
+                                    BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                                <StackPanel>
+                                    <Grid Margin="10,8,4,6">
+                                        <TextBlock Text="{Binding Notifications.HeaderText}" FontSize="12"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <Button HorizontalAlignment="Right" Style="{StaticResource TitleBarButton}"
+                                                Height="26" Padding="9,0" FontSize="11"
+                                                Content="{Binding Notifications.ClearLabel}"
+                                                Command="{Binding Notifications.ClearCommand}"
+                                                Visibility="{Binding Notifications.HasItems, Converter={StaticResource BoolVis}}" />
+                                    </Grid>
+                                    <TextBlock Margin="10,4,10,14" FontSize="11.5" TextWrapping="Wrap" Opacity="0.85"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
+                                               Text="{Binding Notifications.EmptyText}"
+                                               Visibility="{Binding Notifications.IsEmpty, Converter={StaticResource BoolVis}}" />
+                                    <ScrollViewer MaxHeight="380" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding Notifications.Items}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="4,3" Padding="11,10" CornerRadius="10"
+                                                            Background="{DynamicResource HoverBrush}">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <c:NxIcon Kind="{Binding IconKind}" Width="16" Height="16"
+                                                                      Margin="0,2,11,0" VerticalAlignment="Top"
+                                                                      Foreground="{Binding Accent}" />
+                                                            <StackPanel Grid.Column="1">
+                                                                <Grid>
+                                                                    <TextBlock Text="{Binding Title}" FontSize="12.5"
+                                                                               FontWeight="SemiBold" TextWrapping="Wrap"
+                                                                               Margin="0,0,44,0"
+                                                                               Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                                    <TextBlock Text="{Binding TimeText}" FontSize="10"
+                                                                               HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                                               Opacity="0.7"
+                                                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                                </Grid>
+                                                                <TextBlock Text="{Binding Message}" FontSize="11.5"
+                                                                           TextWrapping="Wrap" Margin="0,3,0,0" Opacity="0.9"
+                                                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                                <Button Content="{Binding OpenLabel}" FontSize="11"
+                                                                        HorizontalAlignment="Left" Margin="0,8,0,0"
+                                                                        Style="{StaticResource GhostButton}" Width="Auto"
+                                                                        Visibility="{Binding HasTarget, Converter={StaticResource BoolVis}}"
+                                                                        Command="{Binding DataContext.Notifications.OpenItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                        CommandParameter="{Binding}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </Grid>
+
+                    <Button Style="{StaticResource TitleBarButton}" Click="OpenGamingClicked" Margin="0,0,4,0"
+                            ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.gaming.tip}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:NxIcon Kind="gamepad" Width="17" Height="17" Margin="0,0,8,0" Foreground="#6BD93D" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.gaming}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource TitleBarButton}" Click="OpenSettingsClicked" Margin="0,0,4,0"
+                            ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.settings.tip}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:NxIcon Kind="gear" Width="16" Height="16" Margin="0,0,8,0"
+                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.settings}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource TitleBarButton}" Click="ToggleThemeClicked" Margin="0,0,10,0"
+                            ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.theme.tip}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:NxIcon Kind="moon" Width="15" Height="15" Margin="0,0,8,0"
+                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.theme}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource CaptionButton}" Content="—" Click="MinimizeWindowClicked" AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.min.tip}" ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.min.tip}" />
+                    <Button Style="{StaticResource CaptionButton}" Click="MaximizeWindowClicked" AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.max.tip}" ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.max.tip}">
+                        <TextBlock x:Name="MaximizeGlyph" Text="□" FontSize="15" />
+                    </Button>
+                    <Button Style="{StaticResource CloseCaptionButton}" Content="×" FontSize="20" Click="CloseWindowClicked" AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.close.tip}" ToolTip="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.close.tip}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ================================ SIDEBAR ================================ -->
+        <Border Grid.Row="1" Grid.Column="0" Background="{DynamicResource SidebarBrush}">
+            <DockPanel LastChildFill="True">
+
+                <!-- Piede: versione del prodotto -->
+                <StackPanel DockPanel.Dock="Bottom" Margin="22,0,20,16">
+                    <TextBlock Text="NEXUS OPTIMIZER" FontSize="9.5" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextSecondaryBrush}" Opacity="0.85" />
+                    <TextBlock Text="{Binding Source={x:Static vm:MainViewModel.VersionText}, Mode=OneTime}"
+                               FontSize="9.5" Margin="0,2,0,0" Opacity="0.6"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+
+                <!-- Selettore livello modalità -->
+                <Border DockPanel.Dock="Bottom" Margin="14,10,14,12" Padding="6"
+                        Background="{DynamicResource CardBrush}" CornerRadius="12"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="8,6,0,7">
+                            <c:NxIcon Kind="shield" Width="13" Height="13" Margin="0,0,7,0"
+                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.mode.level}" FontSize="9.5" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding ModeLevels}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource ModeLevelButton}"
+                                            Command="{Binding DataContext.SetModeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Menu principale -->
+                <ListBox x:Name="NavList" ItemsSource="{Binding MenuItems}" SelectedItem="{Binding Selected}"
+                         Background="Transparent" BorderThickness="0" Margin="12,14,12,6"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                            <Setter Property="Margin" Value="0,1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Rail" Width="3" CornerRadius="2" Opacity="0" Margin="0,7"
+                                                    Background="{DynamicResource AccentBrush}" />
+                                            <Border x:Name="Bg" Grid.Column="1" Background="Transparent" CornerRadius="10" Padding="11,8">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background"
+                                                        Value="{DynamicResource HoverBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bg" Property="Background"
+                                                        Value="{DynamicResource AccentSoftBrush}" />
+                                                <Setter TargetName="Rail" Property="Opacity" Value="1" />
+                                                <Setter Property="Foreground"
+                                                        Value="{DynamicResource TextPrimaryBrush}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Subtitle}">
+                                <c:NxIcon Kind="{Binding IconKind}" Width="19" Height="19"
+                                          VerticalAlignment="Center" Margin="0,0,13,0"
+                                          Foreground="{Binding IconBrush}" />
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="Medium"
+                                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                    <TextBlock Text="{Binding Subtitle}" FontSize="9.5" MaxWidth="182" Margin="0,1,0,0"
+                                               TextTrimming="CharacterEllipsis"
+                                               Visibility="{Binding HasSubtitle, Converter={StaticResource BoolVis}}"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+            </DockPanel>
+        </Border>
+
+        <!-- =============================== CONTENUTO =============================== -->
+        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding Current}"
+                        Margin="26,20,26,18" Focusable="False" />
+
+        <!-- COMMAND PALETTE OVERLAY (CTRL+K) -->
+        <Border Grid.Row="1" Grid.ColumnSpan="2"
+                Visibility="{Binding IsPaletteOpen, Converter={StaticResource BoolVis}}"
+                Background="#99000000">
+            <Grid VerticalAlignment="Top" Margin="0,70,0,0">
+                <Border Width="600" HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Background="{DynamicResource CardBrush}" CornerRadius="12"
+                        BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" MaxHeight="360" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBox Grid.Row="0" x:Name="PaletteBox" BorderThickness="0" Background="Transparent"
+                                 AutomationProperties.Name="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.search.placeholder}"
+                                 FontSize="14" Margin="18,16" Padding="0,2"
+                                 Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalContentAlignment="Stretch"
+                                 Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                        <Rectangle Grid.Row="1" Height="1" Fill="{DynamicResource SeparatorBrush}" />
+
+                        <ListBox Grid.Row="2" Background="Transparent" BorderThickness="0"
+                                 Margin="8,6,8,6" ItemsSource="{Binding Results}"
+                                 MouseDoubleClick="OnPaletteItem"
+                                 HorizontalContentAlignment="Stretch">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel ToolTip="{Binding Subtitle}">
+                                        <TextBlock Text="{Binding Title}" FontSize="13.5"
+                                                   FontWeight="Medium" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding Subtitle}" FontSize="11" Opacity="0.8"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <TextBlock Grid.Row="3" Margin="16,6,16,12" FontSize="11" Opacity="0.7"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Text="{Binding Source={x:Static s:Locale.Live}, Path=Version, Converter={StaticResource Loc}, ConverterParameter=ui.palette.hint}" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
