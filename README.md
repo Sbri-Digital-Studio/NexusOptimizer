@@ -82,6 +82,19 @@ Impronte della **v0.1.0-alpha.1**:
 a526ee8e2b1bc0a160c6dc09adffff1431dadbfb94a8edb8c045384981beaa51  NexusOptimizer-win-x64.zip
 ```
 
+### Analisi antivirus
+
+Il pacchetto della v0.1.0-alpha.1 è stato sottoposto a VirusTotal, che lo esamina con 67 motori
+antivirus: [referto pubblico](https://www.virustotal.com/gui/file/25a3a3f493641b089430725b36a2dd268b03b376c5fcad956e13617d1b5b311f).
+
+Esito: **66 motori su 67 lo dichiarano pulito.** L'unico rilevamento è di Bkav Pro, con l'etichetta
+`W32.Malware.67B4CF3A` — una firma euristica generica, non l'identificazione di una famiglia di
+malware nota. È il falso positivo tipico di un eseguibile non firmato, distribuito come file
+singolo, che modifica registro, servizi e voci di avvio: esattamente ciò che questo programma
+dichiara di fare, e ciò che le euristiche cercano. Nessun motore fra i più diffusi segnala nulla.
+
+Il referto è pubblico e riverificabile da chiunque, in qualsiasi momento.
+
 Se non ti fidi di un binario non firmato — posizione ragionevole, e coerente con lo spirito di
 questo progetto — compilalo tu: il sorgente è interamente qui e bastano `dotnet build` e
 `.\Installer\Publish.ps1`.
