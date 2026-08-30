@@ -151,45 +151,25 @@ interattivo stile Explorer + export PDF · Registry checker LIMITATO a startup/u
 con backup pre-change · Scheduling manutenzione · Plugin locale sandboxed (valutazione
 sicurezza) · Remote monitoring opt-in esplicito · Localizzazioni aggiuntive · Enterprise flags.
 
-## Funzioni pianificate — da definire
-
-Due direzioni decise, non ancora progettate. Restano qui finche' non hanno un perimetro
-preciso: meglio una voce onesta in roadmap che una mezza implementazione nel prodotto.
-
-### Backup comprensibile per chi non e' tecnico
+## In arrivo — Backup verificabile
 
 Copia dei file personali su disco esterno o cartella locale, spiegata in italiano corrente:
 cosa viene salvato, quanto occupa, quando e' stata fatta l'ultima volta.
 
-Il problema reale non e' fare la copia, e' sapere se serve a qualcosa: moltissimi backup
-esistono e non ripristinano, e chi li possiede lo scopre nel momento peggiore. Il gate di
-rilascio quindi **non e' la riuscita della copia ma la prova del ripristino**, eseguita dal
-programma e mostrata all'utente.
+**Strutturato**, non una cartella copiata alla cieca: versioni successive conservate, cosi'
+che sia recuperabile anche uno stato precedente e non solo l'ultimo; perimetro dichiarato
+voce per voce, con cio' che resta escluso detto apertamente invece di sparire dal riepilogo.
 
-Vincoli ereditati: nessun account cloud obbligatorio, nessuna cifra di spazio "liberato" o
-"protetto" che non sia misurata. Se una cartella non puo' essere copiata in modo affidabile,
-va detto invece di ometterlo dal riepilogo.
+**Verificabile**, e qui sta il punto. Il problema reale non e' fare la copia, e' sapere se
+serve a qualcosa: moltissimi backup esistono e non ripristinano, e chi li possiede lo scopre
+nel momento peggiore. Il gate di rilascio quindi **non e' la riuscita della copia ma la prova
+del ripristino**, eseguita dal programma e mostrata all'utente.
+
+Vincoli ereditati: nessun account cloud obbligatorio, nessuna cifra di spazio "protetto" che
+non sia misurata. Se una cartella non puo' essere copiata in modo affidabile, va detto.
 
 Il Safety Engine (quarantena, log transazionale, Undo senza overwrite) e' gia' la base
 adatta: nessun ripristino deve poter sovrascrivere in silenzio un file piu' recente.
-
-### Protezione dalle truffe di finto supporto tecnico
-
-Le truffe che iniziano con una telefonata — "sono Microsoft", "sono la sua banca" — e
-proseguono facendo installare alla vittima uno strumento di accesso remoto causano danni
-economici reali, e colpiscono soprattutto chi ha meno strumenti per difendersi.
-
-Perimetro previsto: **avvisare e spiegare, mai classificare ne' bloccare da soli.** Quando
-compare o si avvia uno strumento di accesso remoto, o cambia qualcosa che quelle truffe
-usano abitualmente, l'utente vede un avviso grande e comprensibile che gli chiede se sta
-parlando al telefono con qualcuno, con la possibilita' di allertare un familiare.
-
-Questo rispetta il vincolo gia' scritto nella tabella qui sotto: nessuno di quei programmi
-e' malware, sono strumenti legittimi usati male, e Nexus non li etichetta come malevoli.
-
-**Prerequisito bloccante: la firma Authenticode.** Un programma che insegna a diffidare non
-puo' presentarsi con l'avviso SmartScreen da ignorare — sarebbe esattamente il gesto che i
-truffatori chiedono di compiere. Finche' la firma non c'e', questa funzione non si rilascia.
 
 ---
 
