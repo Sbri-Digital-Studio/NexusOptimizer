@@ -112,4 +112,4 @@ sotto la stessa licenza. È una scelta deliberata: in una categoria di software 
 rebranding opachi e adware, il copyleft garantisce che ogni derivato resti ispezionabile
 quanto l'originale.
 
-Copyright (C) 2026 Kristian
+Copyright (C) 2026 Sbri Digital Studio
