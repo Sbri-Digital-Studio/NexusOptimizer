@@ -214,3 +214,13 @@ rebranding opachi e adware, il copyleft garantisce che ogni derivato resti ispez
 quanto l'originale.
 
 Copyright (C) 2026 Sbri Digital Studio
+
+---
+
+<p align="center">
+  <a href="https://github.com/Sbri-Digital-Studio">
+    <img src="docs/sbri-digital-studio.png" alt="Sbri Digital Studio" width="88">
+  </a>
+</p>
+
+<p align="center"><sub>Un prodotto di <b>Sbri Digital Studio</b></sub></p>
