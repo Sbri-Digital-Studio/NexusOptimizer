@@ -1,6 +1,7 @@
-# Matrice funzionale — riferimento Nexus Optimizer
+﻿# Matrice funzionale — riferimento Nexus Optimizer
 
-L'immagine `anteprima NexusOptimizer.png` è il riferimento di prodotto. Le funzioni vengono
+L'immagine `anteprima NexusOptimizer.png` è il riferimento di prodotto. I dati hardware
+mostrati nei pannelli "Il mio PC" e "Stato dischi" sono valori d'esempio. Le funzioni vengono
 implementate con dati reali e senza simulare azioni che Windows non rende sicure o verificabili.
 
 | Area del riferimento | Implementazione corrente |
