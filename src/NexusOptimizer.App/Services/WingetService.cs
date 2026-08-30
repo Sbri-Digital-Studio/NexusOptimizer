@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using NexusOptimizer.Core.Logging;
 
@@ -169,7 +169,10 @@ public sealed class WingetService(FileLogService log)
         var results = new List<PackageUpdate>();
         if (string.IsNullOrWhiteSpace(output)) return results;
 
-        var lines = output.Replace("\r", "\n", StringComparison.Ordinal)
+        // CRLF prima dei \r isolati: invertendo l'ordine ogni "\r\n" diventerebbe
+        // una riga vuota di troppo e la tabella si chiuderebbe subito (winget usa CRLF).
+        var lines = output.Replace("\r\n", "\n", StringComparison.Ordinal)
+                          .Replace("\r", "\n", StringComparison.Ordinal)
                           .Split('\n')
                           .Select(StripProgress)
                           .ToArray();

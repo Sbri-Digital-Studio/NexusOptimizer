@@ -1,4 +1,4 @@
-using NexusOptimizer.App.Services;
+﻿using NexusOptimizer.App.Services;
 
 namespace NexusOptimizer.Tests;
 
@@ -139,6 +139,24 @@ public sealed class SoftwareInventoryTests
         Assert.Equal("10.0.400", updates[0].AvailableVersion);
         Assert.Equal("Microsoft Windows Desktop Runtime - 8.0.23 (x64)", updates[2].Name);
         Assert.Equal("1.2026.812.100", updates[3].AvailableVersion);
+        Assert.DoesNotContain(updates, u => u.Id.Contains("aggiornamenti", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Winget su Windows termina le righe con CRLF. Il caso va imposto qui: le
+    /// costanti sopra ereditano i line ending del file, quindi su una copia di
+    /// lavoro LF il bug non emergerebbe.
+    /// </summary>
+    [Fact]
+    public void CrlfOutput_IsParsedLikeLfOutput()
+    {
+        var crlf = RealOutput.Replace("\r\n", "\n").Replace("\n", "\r\n");
+
+        var updates = WingetService.ParseUpgradeTable(crlf);
+
+        Assert.Equal(5, updates.Count);
+        Assert.Equal("Microsoft.DotNet.SDK.10", updates[0].Id);
+        Assert.Equal("10.0.400", updates[0].AvailableVersion);
         Assert.DoesNotContain(updates, u => u.Id.Contains("aggiornamenti", StringComparison.OrdinalIgnoreCase));
     }
 
