@@ -5,7 +5,7 @@
 <h1 align="center">Nexus Optimizer</h1>
 
 <p align="center">
-  <a href="https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml"><img src="https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml/badge.svg" alt="Build e test"></a>
+  <a href="https://github.com/Sbri-Digital-Studio/NexusOptimizer/actions/workflows/build.yml"><img src="https://github.com/Sbri-Digital-Studio/NexusOptimizer/actions/workflows/build.yml/badge.svg" alt="Build e test"></a>
 </p>
 
 Alternativa moderna, sicura e trasparente ai sistemi "cleaner/optimizer" per Windows.
@@ -47,7 +47,7 @@ Documentazione: [`docs/MODALITA-GAMING.md`](docs/MODALITA-GAMING.md) ·
 
 ## Download
 
-L'ultima versione è nella pagina [Releases](https://github.com/Sbri0110/NexusOptimizer/releases/latest).
+L'ultima versione è nella pagina [Releases](https://github.com/Sbri-Digital-Studio/NexusOptimizer/releases/latest).
 
 | File | Uso |
 |---|---|
