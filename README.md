@@ -1,5 +1,7 @@
 # Nexus Optimizer
 
+[![Build e test](https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml/badge.svg)](https://github.com/Sbri0110/NexusOptimizer/actions/workflows/build.yml)
+
 Alternativa moderna, sicura e trasparente ai sistemi "cleaner/optimizer" per Windows.
 
 **Principi:** sicurezza > affidabilita' > trasparenza > leggerezza. Ogni operazione e' analizzata,
